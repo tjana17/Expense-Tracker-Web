@@ -87,7 +87,7 @@ if (isset($_SESSION['user_id'])) {
     <div class="search-bar logo">
       <?php echo $greeting; ?>,
       <span><?php echo htmlspecialchars($user_name); ?></span><br />
-      <p>Your performance summary this week</p>
+      <p>Your performance summary this month</p>
     </div><!-- End Search Bar -->
 
     <nav class="header-nav ms-auto">
