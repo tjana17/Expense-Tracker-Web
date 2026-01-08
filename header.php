@@ -101,13 +101,13 @@ if (isset($_SESSION['user_id'])) {
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li class="dropdown-header">
+            <!-- <li class="dropdown-header">
               <h6><?php echo htmlspecialchars($user_name); ?></h6>
-              <!-- <span><?php echo htmlspecialchars($user_role); ?></span> -->
-            </li>
+               <span><?php echo htmlspecialchars($user_role); ?></span> 
+            </li> 
             <li>
               <hr class="dropdown-divider">
-            </li>
+            </li>-->
 
             <li>
               <a class="dropdown-item d-flex align-items-center" href="<?php echo $path; ?>users-profile.html">
