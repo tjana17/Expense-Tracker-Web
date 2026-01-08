@@ -32,11 +32,15 @@ if ($hour < 12) {
 
 if (isset($_SESSION['user_id'])) {
     $id = $_SESSION['user_id'];
-    $query = mysqli_query($conn, "SELECT name FROM users WHERE id='$id'");
+    $query = mysqli_query($conn, "SELECT name, profile_image FROM users WHERE id='$id'");
     if ($query && mysqli_num_rows($query) > 0) {
         $row = mysqli_fetch_assoc($query);
         $user_name = $row['name'];
+        $user_profile_img = !empty($row['profile_image']) ? $path . $row['profile_image'] : $path . "assets/img/profile-img.jpg";
     }
+}
+if (!isset($user_profile_img)) {
+    $user_profile_img = $path . "assets/img/profile-img.jpg";
 }
 ?>
 <!DOCTYPE html>
@@ -96,7 +100,7 @@ if (isset($_SESSION['user_id'])) {
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="<?php echo $path; ?>assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <img src="<?php echo $user_profile_img; ?>" alt="Profile" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
             <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo htmlspecialchars($user_name); ?></span>
           </a><!-- End Profile Iamge Icon -->
 
@@ -110,7 +114,7 @@ if (isset($_SESSION['user_id'])) {
             </li>-->
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="<?php echo $path; ?>users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo $path; ?>profile.php">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>

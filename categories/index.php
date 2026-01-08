@@ -47,6 +47,7 @@ $result = mysqli_query($conn, "SELECT * FROM categories LIMIT $offset, $limit");
             <thead>
               <tr>
                 <th>#</th>
+                <th>Icon</th>
                 <th>Name</th>
                 <th width="100" class="text-center">Action</th>
               </tr>
@@ -55,6 +56,7 @@ $result = mysqli_query($conn, "SELECT * FROM categories LIMIT $offset, $limit");
               <?php while ($row = mysqli_fetch_assoc($result)): ?>
                 <tr>
                   <td><?= $row['id'] ?></td>
+                  <td><i class="bi <?= htmlspecialchars($row['icon'] ?? 'bi-tag') ?>"></i></td>
                   <td><?= htmlspecialchars($row['name']) ?></td>
                   <td class="text-center">
                     <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i></a>
