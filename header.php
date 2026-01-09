@@ -171,6 +171,20 @@ if (!isset($user_profile_img)) {
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link <?= $is_income ? '' : 'collapsed' ?>" href="<?php echo $path; ?>analytics.php">
+            <i class="bi bi-bar-chart-line"></i>
+            <span>Analytics</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link <?= $is_income ? '' : 'collapsed' ?>" href="<?php echo $path; ?>reports.php">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            <span>Reports</span>
+        </a>
+      </li>
+
       <!-- Add other nav items here as needed -->
 
     </ul>
