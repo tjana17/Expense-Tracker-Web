@@ -20,6 +20,8 @@ $is_dashboard = strpos($current_uri, 'dashboard.php') !== false;
 $is_categories = strpos($current_uri, '/categories/') !== false;
 $is_expenses = strpos($current_uri, '/expenses/') !== false;
 $is_income = strpos($current_uri, '/income/') !== false;
+$is_reports = strpos($current_uri, 'reports.php') !== false;
+$is_analytics = strpos($current_uri, 'analytics.php') !== false;
 
 $hour = date('H');
 if ($hour < 12) {
@@ -172,14 +174,14 @@ if (!isset($user_profile_img)) {
       </li>
 
       <li class="nav-item">
-        <a class="nav-link <?= $is_income ? '' : 'collapsed' ?>" href="<?php echo $path; ?>analytics.php">
+        <a class="nav-link <?= $is_analytics ? '' : 'collapsed' ?>" href="<?php echo $path; ?>analytics.php">
             <i class="bi bi-bar-chart-line"></i>
             <span>Analytics</span>
         </a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link <?= $is_income ? '' : 'collapsed' ?>" href="<?php echo $path; ?>reports.php">
+        <a class="nav-link <?= $is_reports ? '' : 'collapsed' ?>" href="<?php echo $path; ?>reports.php">
             <i class="bi bi-file-earmark-bar-graph"></i>
             <span>Reports</span>
         </a>

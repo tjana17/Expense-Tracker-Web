@@ -66,7 +66,7 @@ while ($row = mysqli_fetch_assoc($months_query)) {
     <h1>Analytics</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="analytics.php">Home</a></li>
+        <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
         <li class="breadcrumb-item active">Analytics</li>
       </ol>
     </nav>

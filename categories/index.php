@@ -40,7 +40,10 @@ $result = mysqli_query($conn, "SELECT * FROM categories LIMIT $offset, $limit");
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title">Manage Categories</h5>
-            <a href="add.php" class="btn btn-primary">+ Add Category</a>
+            <div class="d-flex" style="gap: 10px;">
+              <a href="../expenses/add.php" class="btn btn-success">+ Add Expense</a>
+              <a href="add.php" class="btn btn-primary">+ Add Category</a>
+            </div>
           </div>
 
           <table class="table table-bordered table-striped">

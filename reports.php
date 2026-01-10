@@ -1,56 +1,11 @@
-<?php include "header.php";
-
-$user_id = $_SESSION['user_id'];
-
-$current_month = date('m');
-$current_year = date('Y');
-
-// Total Expenses (This Month)
-$expense_query = mysqli_query($conn, 
-  "SELECT SUM(amount) AS total FROM expenses 
-   WHERE user_id='$user_id' 
-   AND MONTH(expense_date) = '$current_month' 
-   AND YEAR(expense_date) = '$current_year'");
-$expense_data = mysqli_fetch_assoc($expense_query);
-$total_expense = $expense_data['total'] ?? 0;
-
-// Total Income (This Month)
-$income_query = mysqli_query($conn, 
-  "SELECT SUM(amount) AS total FROM incomes 
-   WHERE user_id='$user_id' 
-   AND MONTH(income_date) = '$current_month' 
-   AND YEAR(income_date) = '$current_year'");
-$income_data = mysqli_fetch_assoc($income_query);
-$total_income = $income_data['total'] ?? 0;
-
-// Total Savings (This Month)
-$total_savings = $total_income - $total_expense;
-
-// Daily Expenses for Chart
-$chart_query = mysqli_query($conn, 
-  "SELECT DATE(expense_date) as date, SUM(amount) as total 
-   FROM expenses 
-   WHERE user_id='$user_id' 
-   AND MONTH(expense_date) = '$current_month' 
-   AND YEAR(expense_date) = '$current_year' 
-   GROUP BY DATE(expense_date) 
-   ORDER BY DATE(expense_date)");
-
-$dates = [];
-$amounts = [];
-while ($row = mysqli_fetch_assoc($chart_query)) {
-    $dates[] = $row['date'];
-    $amounts[] = $row['total'];
-}
-?>
-
+<?php include "header.php"; ?>
 
 <div class="pagetitle d-flex justify-content-between align-items-center">
   <div>
     <h1>Reports</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="reports.php">Home</a></li>
+        <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
         <li class="breadcrumb-item active">Reports</li>
       </ol>
     </nav>
@@ -61,198 +16,225 @@ while ($row = mysqli_fetch_assoc($chart_query)) {
   </div>
 </div><!-- End Page Title -->
 
-<section class="section dashboard">
-<div class="row">
+<section class="section">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Generate Reports</h5>
 
-  <!-- Total Expenses Card -->
-  <div class="col-xxl-4 col-md-4">
-    <div class="card info-card sales-card">
-      
-      <div class="card-body">
-        <h5 class="card-title">Expenses <span>| This Month</span></h5>
+          <!-- Filters Row -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Select Type</label>
+              <select id="reportType" class="form-select">
+                <option value="">Choose...</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="col-md-4" id="monthFilterContainer" style="display: none;">
+              <label class="form-label">Select Month</label>
+              <select id="reportMonth" class="form-select">
+                <!-- Populated via AJAX -->
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button id="downloadBtn" class="btn btn-outline-primary" style="display: none;">
+                <i class="bi bi-download me-1"></i> Download CSV
+              </button>
+            </div>
+          </div>
 
-        <div class="d-flex align-items-center">
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <i class="bi bi-currency-exchange"></i>
+          <!-- Table Container -->
+          <div id="reportResults" style="display: none;">
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-4">
+              <ul class="pagination justify-content-center" id="pagination">
+                <!-- Populated via JS -->
+              </ul>
+            </nav>
+            <div class="text-center text-muted small mt-2" id="recordCount"></div>
           </div>
-          <div class="ps-3">
-            <h6>₹<?= number_format($total_expense, 2) ?></h6>
-            <!-- <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
+
+          <!-- Loading Spinner -->
+          <div id="loading" class="text-center p-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
           </div>
+
+          <!-- Empty State -->
+          <div id="noData" class="text-center p-5 text-muted" style="display: none;">
+            No records found for the selected criteria.
+          </div>
+
         </div>
       </div>
-
     </div>
-  </div><!-- End Expenses Card -->
-
-  <!-- Total Income Card -->
-  <div class="col-xxl-4 col-md-4">
-    <div class="card info-card revenue-card">
-
-      <div class="card-body">
-        <h5 class="card-title">Income <span>| This Month</span></h5>
-
-        <div class="d-flex align-items-center">
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <i class="bi bi-currency-dollar"></i>
-          </div>
-          <div class="ps-3">
-            <h6>₹<?= number_format($total_income, 2) ?></h6>
-            <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div><!-- End Income Card -->
-
-  <!-- Savings Card -->
-  <div class="col-xxl-4 col-md-4">
-    <div class="card info-card customers-card">
-
-      <div class="card-body">
-        <h5 class="card-title">Savings <span>| This Month</span></h5>
-
-        <div class="d-flex align-items-center">
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <i class="bi bi-piggy-bank"></i>
-          </div>
-          <div class="ps-3">
-            <h6>₹<?= number_format($total_savings, 2) ?></h6>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div><!-- End Savings Card -->
-
-  <!-- Expense Report Chart -->
-  <div class="col-8">
-    <div class="card">
-
-      <div class="card-body">
-        <h5 class="card-title">Expense Report <span>/This Month</span></h5>
-
-        <!-- Line Chart -->
-        <div id="reportsChart"></div>
-
-        <script>
-          document.addEventListener("DOMContentLoaded", () => {
-            new ApexCharts(document.querySelector("#reportsChart"), {
-              series: [{
-                name: 'Expenses',
-                data: <?php echo json_encode($amounts); ?>,
-              }],
-              chart: {
-                height: 350,
-                type: 'area',
-                toolbar: {
-                  show: false
-                },
-              },
-              markers: {
-                size: 4
-              },
-              colors: ['#4154f1'],
-              fill: {
-                type: "gradient",
-                gradient: {
-                  shadeIntensity: 1,
-                  opacityFrom: 0.3,
-                  opacityTo: 0.4,
-                  stops: [0, 90, 100]
-                }
-              },
-              dataLabels: {
-                enabled: false
-              },
-              stroke: {
-                curve: 'smooth',
-                width: 2
-              },
-              xaxis: {
-                type: 'datetime',
-                categories: <?php echo json_encode($dates); ?>
-              },
-              tooltip: {
-                x: {
-                  format: 'dd/MM/yy'
-                },
-              }
-            }).render();
-          });
-        </script>
-        <!-- End Line Chart -->
-
-      </div>
-
-    </div>
-  </div><!-- End Expense Report Chart -->
-
-  <!-- Financial Overview Pie Chart -->
-  <div class="col-4">
-    <div class="card">
-
-      <div class="card-body pb-0">
-        <h5 class="card-title">Financial Overview <span>| This Month</span></h5>
-
-        <div id="trafficChart" style="min-height: 360px;" class="echart"></div>
-
-        <script>
-          document.addEventListener("DOMContentLoaded", () => {
-            echarts.init(document.querySelector("#trafficChart")).setOption({
-              tooltip: {
-                trigger: 'item'
-              },
-              legend: {
-                top: '5%',
-                left: 'center'
-              },
-              series: [{
-                name: 'Financial Overview',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                label: {
-                  show: false,
-                  position: 'center'
-                },
-                emphasis: {
-                  label: {
-                    show: true,
-                    fontSize: '18',
-                    fontWeight: 'bold'
-                  }
-                },
-                labelLine: {
-                  show: false
-                },
-                data: [{
-                    value: <?php echo $total_income; ?>,
-                    name: 'Income',
-                    itemStyle: { color: '#2eca6a' }
-                  },
-                  {
-                    value: <?php echo $total_expense; ?>,
-                    name: 'Expense',
-                    itemStyle: { color: '#4154f1' }
-                  },
-                  {
-                    value: <?php echo $total_savings; ?>,
-                    name: 'Savings',
-                    itemStyle: { color: '#ff771d' }
-                  }
-                ]
-              }]
-            });
-          });
-        </script>
-
-      </div>
-    </div>
-  </div><!-- End Financial Overview Pie Chart -->
-
-</div>
+  </div>
 </section>
+
+<script>
+let currentPage = 1;
+
+document.addEventListener("DOMContentLoaded", () => {
+    const typeSelect = document.getElementById('reportType');
+    const monthSelect = document.getElementById('reportMonth');
+    const monthContainer = document.getElementById('monthFilterContainer');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // Handle Type Selection
+    typeSelect.addEventListener('change', async function() {
+        const type = this.value;
+        monthContainer.style.display = 'none';
+        downloadBtn.style.display = 'none';
+        document.getElementById('reportResults').style.display = 'none';
+        document.getElementById('noData').style.display = 'none';
+
+        if (type) {
+            try {
+                const response = await fetch(`api/get_report_options.php?type=${type}`);
+                const data = await response.json();
+                
+                monthSelect.innerHTML = '<option value="">Select Month</option>';
+                data.options.forEach(opt => {
+                    monthSelect.innerHTML += `<option value="${opt.value}">${opt.label}</option>`;
+                });
+                
+                monthContainer.style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching options:', error);
+            }
+        }
+    });
+
+    // Handle Month Selection
+    monthSelect.addEventListener('change', () => {
+        if (monthSelect.value) {
+            currentPage = 1;
+            fetchReportData();
+            downloadBtn.style.display = 'inline-block';
+        } else {
+            document.getElementById('reportResults').style.display = 'none';
+            downloadBtn.style.display = 'none';
+        }
+    });
+
+    // Handle Download
+    downloadBtn.addEventListener('click', () => {
+        const type = typeSelect.value;
+        const date = monthSelect.value;
+        window.location.href = `api/export_report.php?type=${type}&date=${date}`;
+    });
+});
+
+async function fetchReportData(page = 1) {
+    const type = document.getElementById('reportType').value;
+    const date = document.getElementById('reportMonth').value;
+    const resultsDiv = document.getElementById('reportResults');
+    const loading = document.getElementById('loading');
+    const noData = document.getElementById('noData');
+
+    resultsDiv.style.display = 'none';
+    noData.style.display = 'none';
+    loading.style.display = 'block';
+
+    try {
+        const response = await fetch(`api/get_report_data.php?type=${type}&date=${date}&page=${page}`);
+        const data = await response.json();
+
+        loading.style.display = 'none';
+
+        if (data.records.length > 0) {
+            renderTable(type, data.records);
+            renderPagination(data.total_pages, data.current_page);
+            document.getElementById('recordCount').innerText = `Total Records: ${data.total_records}`;
+            resultsDiv.style.display = 'block';
+        } else {
+            noData.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        loading.style.display = 'none';
+    }
+}
+
+function renderTable(type, records) {
+    const head = document.getElementById('tableHead');
+    const body = document.getElementById('tableBody');
+
+    if (type === 'expense') {
+        head.innerHTML = `
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Note</th>
+            </tr>
+        `;
+        body.innerHTML = records.map(r => `
+            <tr>
+                <td>${r.expense_date}</td>
+                <td><span class="badge bg-primary">${r.category_name || 'N/A'}</span></td>
+                <td class="fw-bold">₹${parseFloat(r.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                <td><span class="text-muted small">${r.note || '-'}</span></td>
+            </tr>
+        `).join('');
+    } else {
+        head.innerHTML = `
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Note</th>
+            </tr>
+        `;
+        body.innerHTML = records.map(r => `
+            <tr>
+                <td>${r.income_date}</td>
+                <td class="fw-bold text-success">₹${parseFloat(r.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                <td><span class="text-muted small">${r.note || '-'}</span></td>
+            </tr>
+        `).join('');
+    }
+}
+
+function renderPagination(totalPages, currentPage) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    // Previous
+    pagination.innerHTML += `
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="fetchReportData(${currentPage - 1}); return false;">Previous</a>
+        </li>
+    `;
+
+    // Pages
+    for (let i = 1; i <= totalPages; i++) {
+        pagination.innerHTML += `
+            <li class="page-item ${currentPage === i ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="fetchReportData(${i}); return false;">${i}</a>
+            </li>
+        `;
+    }
+
+    // Next
+    pagination.innerHTML += `
+        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="fetchReportData(${currentPage + 1}); return false;">Next</a>
+        </li>
+    `;
+}
+</script>
 
 <?php include "footer.php"; ?>
