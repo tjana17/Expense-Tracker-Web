@@ -61,6 +61,7 @@ $result = mysqli_query($conn,
                 <th>Date</th>
                 <th>Category</th>
                 <th class="text-end">Amount</th>
+                <th>Note</th>
                 <th width="100" class="text-center">Action</th>
               </tr>
             </thead>
@@ -70,6 +71,7 @@ $result = mysqli_query($conn,
                   <td><?= date('d M Y', strtotime($row['expense_date'])) ?></td>
                   <td><?= htmlspecialchars($row['category_name']) ?></td>
                   <td class="text-end">₹<?= htmlspecialchars($row['amount']) ?></td>
+                  <td><?= htmlspecialchars($row['note']) ?></td>
                   <td class="text-center">
                     <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i></a>
                     <a href="delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Delete this expense?')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>

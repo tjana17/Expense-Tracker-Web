@@ -81,7 +81,13 @@
     </div>
   </div>
 </section>
-
+<style>
+.badge-bg-primary {
+  color: #000;
+  --bs-bg-opacity: 0.3;
+  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+}
+</style>
 <script>
 let currentPage = 1;
 
@@ -183,7 +189,7 @@ function renderTable(type, records) {
         body.innerHTML = records.map(r => `
             <tr>
                 <td>${r.expense_date}</td>
-                <td><span class="badge bg-primary">${r.category_name || 'N/A'}</span></td>
+                <td><span class="badge badge-bg-primary">${r.category_name || 'N/A'}</span></td>
                 <td class="fw-bold">₹${parseFloat(r.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                 <td><span class="text-muted small">${r.note || '-'}</span></td>
             </tr>
