@@ -26,6 +26,17 @@ $total_income = $income_data['total'] ?? 0;
 // Total Savings (This Month)
 $total_savings = $total_income - $total_expense;
 
+// Overall Totals
+$overall_expense_query = mysqli_query($conn, "SELECT SUM(amount) AS total FROM expenses WHERE user_id='$user_id'");
+$overall_expense_data = mysqli_fetch_assoc($overall_expense_query);
+$total_overall_expense = $overall_expense_data['total'] ?? 0;
+
+$overall_income_query = mysqli_query($conn, "SELECT SUM(amount) AS total FROM incomes WHERE user_id='$user_id'");
+$overall_income_data = mysqli_fetch_assoc($overall_income_query);
+$total_overall_income = $overall_income_data['total'] ?? 0;
+
+$total_overall_savings = $total_overall_income - $total_overall_expense;
+
 // Daily Expenses for Chart
 $chart_query = mysqli_query($conn, 
   "SELECT DATE(expense_date) as date, SUM(amount) as total 
@@ -274,6 +285,63 @@ for ($i = 11; $i >= 0; $i--) {
       </div>
     </div>
   </div><!-- End Financial Overview Pie Chart -->
+
+  <!-- Overall Summary Row -->
+  <div class="col-lg-12">
+    <div class="row">
+      <!-- Overall Expenses Card -->
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card sales-card">
+          <div class="card-body">
+            <h5 class="card-title">Overall Expenses</h5>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-currency-exchange"></i>
+              </div>
+              <div class="ps-3">
+                <h6>₹<?= number_format($total_overall_expense, 2) ?></h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overall Income Card -->
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card revenue-card">
+          <div class="card-body">
+            <h5 class="card-title">Overall Income</h5>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-currency-dollar"></i>
+              </div>
+              <div class="ps-3">
+                <h6>₹<?= number_format($total_overall_income, 2) ?></h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Savings Card -->
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card customers-card">
+          <div class="card-body">
+            <h5 class="card-title">Overall Savings</h5>
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-piggy-bank"></i>
+              </div>
+              <div class="ps-3">
+                <h6>₹<?= number_format($total_overall_savings, 2) ?></h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- End Overall Summary Row -->
+
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
@@ -384,7 +452,9 @@ for ($i = 11; $i >= 0; $i--) {
       </div>
     </div>
   </div><!-- End Financial Performance -->
+
 </div>
+
 
 </section>
 

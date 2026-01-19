@@ -93,7 +93,7 @@ if (!isset($user_profile_img)) {
     <div class="search-bar logo">
       <?php echo $greeting; ?>,
       <span><?php echo htmlspecialchars($user_name); ?></span><br />
-      <p>Your performance summary this month</p>
+      <p>Your performance summary -  <?= date('M Y') ?></p>
     </div><!-- End Search Bar -->
 
     <nav class="header-nav ms-auto">
