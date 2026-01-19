@@ -36,11 +36,34 @@ $chart_query = mysqli_query($conn,
    GROUP BY DATE(expense_date) 
    ORDER BY DATE(expense_date)");
 
-$dates = [];
-$amounts = [];
+$dailyDates = [];
+$dailyAmounts = [];
 while ($row = mysqli_fetch_assoc($chart_query)) {
-    $dates[] = $row['date'];
-    $amounts[] = $row['total'];
+    $dailyDates[] = $row['date'];
+    $dailyAmounts[] = $row['total'];
+}
+
+// Monthly Performance for Column Chart
+$monthlyDates = [];
+$incomeData = [];
+$expenseData = [];
+$savingsData = [];
+
+for ($i = 11; $i >= 0; $i--) {
+    $monthDate = date('Y-m-d', strtotime("-$i months"));
+    $m = date('m', strtotime($monthDate));
+    $y = date('Y', strtotime($monthDate));
+    $monthlyDates[] = date('M Y', strtotime($monthDate));
+
+    $m_income_query = mysqli_query($conn, "SELECT SUM(amount) as total FROM incomes WHERE user_id='$user_id' AND MONTH(income_date) = '$m' AND YEAR(income_date) = '$y'");
+    $m_income = mysqli_fetch_assoc($m_income_query)['total'] ?? 0;
+    
+    $m_expense_query = mysqli_query($conn, "SELECT SUM(amount) as total FROM expenses WHERE user_id='$user_id' AND MONTH(expense_date) = '$m' AND YEAR(expense_date) = '$y'");
+    $m_expense = mysqli_fetch_assoc($m_expense_query)['total'] ?? 0;
+
+    $incomeData[] = (float)$m_income;
+    $expenseData[] = (float)$m_expense;
+    $savingsData[] = (float)($m_income - $m_expense);
 }
 ?>
 
@@ -141,7 +164,7 @@ while ($row = mysqli_fetch_assoc($chart_query)) {
             new ApexCharts(document.querySelector("#reportsChart"), {
               series: [{
                 name: 'Expenses',
-                data: <?php echo json_encode($amounts); ?>,
+                data: <?php echo json_encode($dailyAmounts); ?>,
               }],
               chart: {
                 height: 350,
@@ -172,7 +195,7 @@ while ($row = mysqli_fetch_assoc($chart_query)) {
               },
               xaxis: {
                 type: 'datetime',
-                categories: <?php echo json_encode($dates); ?>
+                categories: <?php echo json_encode($dailyDates); ?>
               },
               tooltip: {
                 x: {
@@ -251,8 +274,118 @@ while ($row = mysqli_fetch_assoc($chart_query)) {
       </div>
     </div>
   </div><!-- End Financial Overview Pie Chart -->
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Financial Performance</h5>
 
+        <!-- Segment Control Buttons -->
+        <div class="btn-group mb-3" role="group" aria-label="Basic outlined example">
+          <button type="button" class="btn btn-outline-primary active" onclick="updateColumnChart(3, this)">3 Months</button>
+          <button type="button" class="btn btn-outline-primary" onclick="updateColumnChart(6, this)">6 Months</button>
+          <button type="button" class="btn btn-outline-primary" onclick="updateColumnChart(12, this)">1 Year</button>
+        </div>
+
+        <!-- Column Chart -->
+        <div id="columnChart" style="min-height: 360px;" class="echart"></div>
+
+        <script>
+          const allDates = <?php echo json_encode($monthlyDates); ?>;
+          const allIncome = <?php echo json_encode($incomeData); ?>;
+          const allExpense = <?php echo json_encode($expenseData); ?>;
+          const allSavings = <?php echo json_encode($savingsData); ?>;
+
+          document.addEventListener("DOMContentLoaded", () => {
+            const chart = echarts.init(document.querySelector("#columnChart"));
+            chart.setOption({
+              tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                  type: 'shadow'
+                }
+              },
+              legend: {
+                data: ['Income', 'Expense', 'Savings']
+              },
+              grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+              },
+              xAxis: {
+                type: 'category',
+                data: allDates.slice(-3),
+                axisTick: {
+                  alignWithLabel: true
+                }
+              },
+              yAxis: {
+                type: 'value'
+              },
+              series: [
+                {
+                  name: 'Income',
+                  type: 'bar',
+                  data: allIncome.slice(-3),
+                  itemStyle: {
+                    color: '#2eca6a'
+                  }
+                },
+                {
+                  name: 'Expense',
+                  type: 'bar',
+                  data: allExpense.slice(-3),
+                  itemStyle: {
+                    color: '#4154f1'
+                  }
+                },
+                {
+                  name: 'Savings',
+                  type: 'bar',
+                  data: allSavings.slice(-3),
+                  itemStyle: {
+                    color: '#ff771d'
+                  }
+                }
+              ]
+            });
+          });
+
+          function updateColumnChart(months, button) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.btn-outline-primary').forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+
+            // Update chart data based on selected months
+            const chart = echarts.getInstanceByDom(document.querySelector("#columnChart"));
+            chart.setOption({
+              xAxis: {
+                data: allDates.slice(-months)
+              },
+              series: [
+                {
+                  name: 'Income',
+                  data: allIncome.slice(-months)
+                },
+                {
+                  name: 'Expense',
+                  data: allExpense.slice(-months)
+                },
+                {
+                  name: 'Savings',
+                  data: allSavings.slice(-months)
+                }
+              ]
+            });
+          }
+        </script>
+      </div>
+    </div>
+  </div><!-- End Financial Performance -->
 </div>
+
 </section>
 
 <?php include "footer.php"; ?>

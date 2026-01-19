@@ -83,7 +83,7 @@
 </section>
 <style>
 .badge-bg-primary {
-  color: #000;
+  color: #1c478b;
   --bs-bg-opacity: 0.3;
   background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
