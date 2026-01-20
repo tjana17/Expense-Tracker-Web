@@ -50,6 +50,16 @@ $result = mysqli_query($conn,
             <a href="add.php" class="btn btn-primary">+ Add Income</a>
           </div>
 
+          <?php if ($total_records == 0): ?>
+            <div class="text-center p-5">
+              <div class="mb-3">
+                <i class="bi bi-cash-stack text-muted" style="font-size: 3rem;"></i>
+              </div>
+              <h4>No income records found</h4>
+              <p class="text-muted">Start tracking your earnings by adding your first income entry.</p>
+              <a href="add.php" class="btn btn-primary mt-2">+ Add Income</a>
+            </div>
+          <?php else: ?>
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -71,6 +81,7 @@ $result = mysqli_query($conn,
               <?php endwhile; ?>
             </tbody>
           </table>
+          <?php endif; ?>
 
           <!-- Pagination UI -->
           <?php if($total_pages > 1): ?>

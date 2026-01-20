@@ -171,7 +171,7 @@ while ($row = mysqli_fetch_assoc($months_query)) {
   </div>
 
   <!-- Expense Report Chart -->
-  <div class="col-8">
+  <div class="col-md-8 col-12">
     <div class="card">
 
       <div class="card-body">
@@ -185,7 +185,7 @@ while ($row = mysqli_fetch_assoc($months_query)) {
   </div><!-- End Expense Report Chart -->
 
   <!-- Financial Overview Pie Chart -->
-  <div class="col-4">
+  <div class="col-md-4 col-12">
     <div class="card">
       <div class="card-body pb-0">
         <h5 class="card-title">Financial Overview <span id="financialPeriod">| This Month</span></h5>
@@ -328,7 +328,19 @@ async function updatePageData(dateVal, updateAll = true) {
         // Update Category Cards (always update)
         categoryContainer.innerHTML = '';
         if (data.categories.length === 0) {
-            categoryContainer.innerHTML = '<div class="col-12 text-center p-3">No expenses found for this month.</div>';
+            categoryContainer.innerHTML = `
+                <div class="col-12 text-center p-5">
+                    <div class="mb-3">
+                        <i class="bi bi-graph-down text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>No data for this period</h4>
+                    <p class="text-muted">There are no records found for the selected month and year. Start by adding some data to see your analysis.</p>
+                    <div class="mt-3">
+                        <a href="income/add.php" class="btn btn-sm btn-success">+ Add Income</a>
+                        <a href="expenses/add.php" class="btn btn-sm btn-primary">+ Add Expense</a>
+                    </div>
+                </div>
+            `;
         } else {
             data.categories.forEach(cat => {
                 const card = `

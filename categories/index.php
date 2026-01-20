@@ -38,9 +38,9 @@ $result = mysqli_query($conn, "SELECT * FROM categories LIMIT $offset, $limit");
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
             <h5 class="card-title">Manage Categories</h5>
-            <div class="d-flex" style="gap: 10px;">
+            <div class="d-flex mt-2 mt-md-0" style="gap: 10px;">
               <a href="../expenses/add.php" class="btn btn-success">+ Add Expense</a>
               <a href="add.php" class="btn btn-primary">+ Add Category</a>
             </div>

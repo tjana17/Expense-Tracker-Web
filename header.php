@@ -22,7 +22,7 @@ $page_name = basename($_SERVER['PHP_SELF']);
 $current_uri = $_SERVER['PHP_SELF'];
 
 // Determine active section
-$is_dashboard = strpos($current_uri, 'index.php') !== false;
+$is_dashboard = basename($current_uri) == 'index.php' && $path == './';
 $is_categories = strpos($current_uri, '/categories/') !== false;
 $is_expenses = strpos($current_uri, '/expenses/') !== false;
 $is_income = strpos($current_uri, '/income/') !== false;
@@ -58,7 +58,7 @@ if (!isset($user_profile_img)) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Expense Tracker</title>
+  <title>Expencify</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -91,7 +91,7 @@ if (!isset($user_profile_img)) {
     <div class="d-flex align-items-center justify-content-between">
       <a href="<?php echo $path; ?>index.php" class="logo d-flex align-items-center">
         <img src="<?php echo $path; ?>assets/img/logo.png" alt="">
-        <span class="d-none d-lg-block">Expense Tracker</span>
+        <span class="d-none d-lg-block">Expencify</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->

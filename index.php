@@ -79,7 +79,7 @@ for ($i = 11; $i >= 0; $i--) {
 ?>
 
 
-<div class="pagetitle d-flex justify-content-between align-items-center">
+<div class="pagetitle d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
   <div>
     <h1>Dashboard</h1>
     <nav>
@@ -89,13 +89,32 @@ for ($i = 11; $i >= 0; $i--) {
       </ol>
     </nav>
   </div>
-  <div>
+  <div class="mt-3 mt-md-0">
     <a href="expenses/add.php" class="btn btn-primary">+ Add Expense</a>
     <a href="income/add.php" class="btn btn-success ms-2">+ Add Income</a>
   </div>
 </div><!-- End Page Title -->
 
 <section class="section dashboard">
+<?php if ($total_overall_income == 0 && $total_overall_expense == 0): ?>
+  <div class="row">
+    <div class="col-12">
+      <div class="card p-5 text-center">
+        <div class="card-body">
+          <div class="mb-4">
+            <i class="bi bi-wallet2 text-primary" style="font-size: 4rem;"></i>
+          </div>
+          <h2 class="fw-bold">Welcome to Expencify!</h2>
+          <p class="text-muted fs-5">You haven't added any records yet. Start tracking your finances by adding your first income or expense.</p>
+          <div class="mt-4">
+            <a href="income/add.php" class="btn btn-success btn-lg me-2">+ Add Income</a>
+            <a href="expenses/add.php" class="btn btn-primary btn-lg">+ Add Expense</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<?php else: ?>
 <div class="row">
 
   <!-- Total Expenses Card -->
@@ -161,11 +180,11 @@ for ($i = 11; $i >= 0; $i--) {
   </div><!-- End Savings Card -->
 
   <!-- Expense Report Chart -->
-  <div class="col-8">
+  <div class="col-lg-8 col-12">
     <div class="card">
 
       <div class="card-body">
-        <h5 class="card-title">Expense Report <span>/This Month</span></h5>
+        <h5 class="card-title">Expense Report <span>| This Month</span></h5>
 
         <!-- Line Chart -->
         <div id="reportsChart"></div>
@@ -224,7 +243,7 @@ for ($i = 11; $i >= 0; $i--) {
   </div><!-- End Expense Report Chart -->
 
   <!-- Financial Overview Pie Chart -->
-  <div class="col-4">
+  <div class="col-lg-4 col-12">
     <div class="card">
 
       <div class="card-body pb-0">
@@ -454,6 +473,7 @@ for ($i = 11; $i >= 0; $i--) {
   </div><!-- End Financial Performance -->
 
 </div>
+<?php endif; ?>
 
 
 </section>

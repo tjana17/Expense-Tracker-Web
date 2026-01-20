@@ -1,6 +1,6 @@
 <?php include "header.php"; ?>
 
-<div class="pagetitle d-flex justify-content-between align-items-center">
+<div class="pagetitle d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
   <div>
     <h1>Reports</h1>
     <nav>
@@ -10,7 +10,7 @@
       </ol>
     </nav>
   </div>
-  <div>
+  <div class="mt-3 mt-md-0">
     <a href="expenses/add.php" class="btn btn-primary">+ Add Expense</a>
     <a href="income/add.php" class="btn btn-success ms-2">+ Add Income</a>
   </div>
@@ -72,8 +72,12 @@
           </div>
 
           <!-- Empty State -->
-          <div id="noData" class="text-center p-5 text-muted" style="display: none;">
-            No records found for the selected criteria.
+          <div id="noData" class="text-center p-5" style="display: none;">
+            <div class="mb-3">
+              <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+            </div>
+            <h4 class="text-muted">No records found</h4>
+            <p class="text-muted">No records match the selected criteria. Try selecting a different type or period.</p>
           </div>
 
         </div>

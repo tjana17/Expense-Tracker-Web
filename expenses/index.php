@@ -47,15 +47,26 @@ $result = mysqli_query($conn,
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
             <h5 class="card-title">Manage Expenses</h5>
-            <div class="d-flex" style="gap: 10px;">
+            <div class="d-flex mt-2 mt-md-0" style="gap: 10px;">
               <a href="../categories/add.php" class="btn btn-success">+ Add Category</a>
               <a href="add.php" class="btn btn-primary">+ Add Expense</a>
             </div>
           </div>
 
-          <table class="table table-bordered table-striped">
+          <?php if ($total_records == 0): ?>
+            <div class="text-center p-5">
+              <div class="mb-3">
+                <i class="bi bi-cart-x text-muted" style="font-size: 3rem;"></i>
+              </div>
+              <h4>No expenses found</h4>
+              <p class="text-muted">Start tracking your spending by adding your first expense.</p>
+              <a href="add.php" class="btn btn-primary mt-2">+ Add Expense</a>
+            </div>
+          <?php else: ?>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>Date</th>
@@ -79,7 +90,9 @@ $result = mysqli_query($conn,
                 </tr>
               <?php endwhile; ?>
             </tbody>
-          </table>
+            </table>
+          </div>
+          <?php endif; ?>
 
           <!-- Pagination UI -->
           <?php if($total_pages > 1): ?>
