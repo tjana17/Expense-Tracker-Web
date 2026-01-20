@@ -9,7 +9,7 @@ include "../header.php";
   <h1>Categories</h1>
   <nav>
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
+      <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
       <li class="breadcrumb-item active">Categories</li>
     </ol>
   </nav>

@@ -8,6 +8,12 @@ $path = isset($path) ? $path : "./";
 
 include_once __DIR__ . "/config/db.php";
 
+// Authentication Check
+if (!isset($_SESSION['user_id'])) {
+    header("Location: " . $path . "auth/login.php");
+    exit;
+}
+
 $user_name = "Guest";
 $user_role = "User"; // Default or fetch if available
 
@@ -16,7 +22,7 @@ $page_name = basename($_SERVER['PHP_SELF']);
 $current_uri = $_SERVER['PHP_SELF'];
 
 // Determine active section
-$is_dashboard = strpos($current_uri, 'dashboard.php') !== false;
+$is_dashboard = strpos($current_uri, 'index.php') !== false;
 $is_categories = strpos($current_uri, '/categories/') !== false;
 $is_expenses = strpos($current_uri, '/expenses/') !== false;
 $is_income = strpos($current_uri, '/income/') !== false;
@@ -83,7 +89,7 @@ if (!isset($user_profile_img)) {
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="<?php echo $path; ?>dashboard.php" class="logo d-flex align-items-center">
+      <a href="<?php echo $path; ?>index.php" class="logo d-flex align-items-center">
         <img src="<?php echo $path; ?>assets/img/logo.png" alt="">
         <span class="d-none d-lg-block">Expense Tracker</span>
       </a>
@@ -146,7 +152,7 @@ if (!isset($user_profile_img)) {
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link <?= $is_dashboard ? '' : 'collapsed' ?>" href="<?php echo $path; ?>dashboard.php">
+        <a class="nav-link <?= $is_dashboard ? '' : 'collapsed' ?>" href="<?php echo $path; ?>index.php">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>

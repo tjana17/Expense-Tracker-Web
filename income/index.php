@@ -11,7 +11,7 @@ $user_id = $_SESSION['user_id'];
   <h1>Income</h1>
   <nav>
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
+      <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
       <li class="breadcrumb-item active">Income</li>
     </ol>
   </nav>

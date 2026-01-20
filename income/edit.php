@@ -29,7 +29,7 @@ include "../header.php";
   <h1>Edit Income</h1>
   <nav>
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="../dashboard.php">Home</a></li>
+      <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
       <li class="breadcrumb-item"><a href="index.php">Income</a></li>
       <li class="breadcrumb-item active">Edit Income</li>
     </ol>
